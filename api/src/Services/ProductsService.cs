@@ -38,18 +38,7 @@ public class ProductsService : IProductsService
     }
     public async Task<PagedResponse<Product>> ReadProducts(GetProductsDto getProductsDto)
     {
-        var (items, totalCount) = await _productRepository.ReadAvailableAsync(
-            getProductsDto.Page,
-            getProductsDto.PageSize
-        );
-
-        return new PagedResponse<Product>
-        {
-            TotalCount = totalCount,
-            PageNumber = getProductsDto.Page,
-            PageSize = getProductsDto.PageSize,
-            Items = items
-        };
+        return await _productRepository.ReadAvailableAsync(getProductsDto);
     }
     public async Task<Product> UpdateProduct(int id, UpdateProductDto updateProductDto)
     {

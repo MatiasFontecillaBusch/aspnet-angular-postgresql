@@ -1,5 +1,7 @@
+using api.src.DTOs;
 using api.src.Entities;
 using api.src.Interfaces;
+using api.src.Responses;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.src.Data;
@@ -18,21 +20,27 @@ public class ProductRepository
 
         return product;
     }
-    public async Task<(IEnumerable<Product> Items, int TotalCount)> ReadAvailableAsync(int page, int pageSize)
+    public async Task<PagedResponse<Product>> ReadAvailableAsync(GetProductsDto getProductsDto)
     {
         var query = _context.Products
-            .AsNoTracking();
-            // .Where(p => p.IsAvailable);
+            .AsNoTracking().AsQueryable();
 
-        var totalCount = await query.CountAsync();
+        if (!string.IsNullOrWhiteSpace(getProductsDto.Name))
+        {
+            var searchTerm = getProductsDto.Name.Trim().ToLower();
+            Console.Write(searchTerm);
+            query = query.Where(x => x.Name != null && x.Name.ToLower().Contains(searchTerm));
+        }
 
-        var items = await query
-            .OrderBy(p => p.Id)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
-            .ToListAsync();
+        if (getProductsDto.IsAvailable != null)
+        {
+            query = query.Where(x => x.IsAvailable == getProductsDto.IsAvailable);
+        }
+        query = query.OrderByDescending(x => x.Id);
+        
+        var result = await PagedHelper.CreateAsync<Product>(query, getProductsDto.Page, getProductsDto.PageSize);
 
-        return (items, totalCount);
+        return result;
     }
     public async Task<Product?> ReadOneAvailableByIdAsync(int id)
     {

@@ -3,11 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace api.src.DTOs;
 
-public class GetProductsDto
+public class GetProductsDto : PagingDto
 {
-    public int Page { get; set; } = 1;
-    [Range(1, 200, ErrorMessage = "El tamaño de la pagina debe ser entre 1 y 200.")]
-    public int PageSize { get; set; } = 10;
-
-    
+    public string? Name { get; set; }
+    public bool? IsAvailable { get; set; }
 }
