@@ -1,4 +1,5 @@
 using System;
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.src.Responses;
@@ -16,9 +17,17 @@ public class PagedResponse<T>
 
 public class PagedHelper
 {
-    public static async Task<PagedResponse<T>> CreateAsync<T>(IQueryable<T> query, int pageNumber, int pageSize)
+    public static async Task<PagedResponse<T>> CreateAsync<T, TKey>(IQueryable<T> query, int pageNumber, int pageSize,
+        Expression<Func<T, TKey>> orderByExpression,
+        bool isDescending = true)
     {
         var count = await query.CountAsync();
+
+        if (isDescending)
+            query = query.OrderByDescending(orderByExpression);
+        else
+            query = query.OrderBy(orderByExpression);
+
         var items = await query
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize).ToListAsync();

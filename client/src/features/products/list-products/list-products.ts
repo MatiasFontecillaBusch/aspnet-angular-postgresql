@@ -1,5 +1,5 @@
 import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
-import { ActivatedRoute, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { PagedResponse } from '../../../types/responses';
 import { Product, ProductsParams } from '../../../types/product';
 import { ProductService } from '../../../core/services/product-service';
@@ -20,7 +20,7 @@ import { StockFormatPipe } from '../../../core/pipes/stock-pipe';
     CreateProductForm,
     DeleteProductButton,
     RestoreProductButton,
-    StockFormatPipe
+    StockFormatPipe,
   ],
   templateUrl: './list-products.html',
   styleUrl: './list-products.css',
@@ -28,34 +28,69 @@ import { StockFormatPipe } from '../../../core/pipes/stock-pipe';
 export class ListProducts {
   private editModal = viewChild<ElementRef<HTMLDialogElement>>('editModal');
   private createModal = viewChild<ElementRef<HTMLDialogElement>>('createModal');
-  protected readonly title = signal('client');
   private route = inject(ActivatedRoute);
   private productService = inject(ProductService);
+  private router = inject(Router);
+  protected readonly title = signal('client');
   protected paginatedProducts = signal<PagedResponse<Product> | null>(null);
   protected selectedProduct = signal<Product | null>(null);
   protected productsParams = signal<ProductsParams>({
     page: 1,
     pageSize: 10,
+    name: '',
+    isAvailable: null,
   });
 
   ngOnInit(): void {
     const queryParams = this.route.snapshot.queryParams;
 
-    if (queryParams['page'] || queryParams['pageSize']) {
+    if (
+      queryParams['page'] ||
+      queryParams['pageSize'] ||
+      queryParams['name'] ||
+      queryParams['isAvailable']
+    ) {
       this.productsParams.update((prev) => ({
         ...prev,
         page: queryParams['page'] ? +queryParams['page'] : prev.page,
         pageSize: queryParams['pageSize'] ? +queryParams['pageSize'] : prev.pageSize,
+        name: queryParams['name'] ? queryParams['name'] : prev.name,
+        isAvailable:
+          queryParams['isAvailable'] !== undefined
+            ? queryParams['isAvailable'] === 'true'
+            : prev.isAvailable,
       }));
     }
     this.loadProducts();
   }
 
+  onSearch(event: { name: string }) {
+    this.productsParams.update((prev) => ({
+      ...prev,
+      name: event.name,
+      page: 1,
+    }));
+    this.updateQueryParams();
+    this.loadProducts();
+  }
+
+  onAvailabilityFiltering(event: { isAvailable: boolean | null }) {
+    this.productsParams.update((prev) => ({
+      ...prev,
+      isAvailable: event.isAvailable,
+      page: 1,
+    }));
+    this.updateQueryParams();
+    this.loadProducts();
+  }
+
   onPageChange(event: { pageNumber: number; pageSize: number }) {
-    this.productsParams.set({
+    this.productsParams.update((prev) => ({
+      ...prev,
       page: event.pageNumber,
       pageSize: event.pageSize,
-    });
+    }));
+    this.updateQueryParams();
     this.loadProducts();
   }
 
@@ -67,20 +102,30 @@ export class ListProducts {
 
   openEditModal(product: Product) {
     this.selectedProduct.set(product);
-    this.editModal()?.nativeElement.showModal(); // Método nativo para abrir modal
+    this.editModal()?.nativeElement.showModal();
   }
 
   closeModal() {
     this.editModal()?.nativeElement.close();
-    this.loadProducts(); // Recargar la tabla tras editar
+    this.loadProducts();
   }
 
   openCreateModal() {
-    this.createModal()?.nativeElement.showModal(); // Método nativo para abrir modal
+    this.createModal()?.nativeElement.showModal();
   }
 
   closeCreateModal() {
     this.createModal()?.nativeElement.close();
-    this.loadProducts(); // Recargar la tabla tras editar
+    this.loadProducts();
+  }
+
+  updateQueryParams() {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        ...this.productsParams(),
+      },
+      queryParamsHandling: 'merge',
+    });
   }
 }

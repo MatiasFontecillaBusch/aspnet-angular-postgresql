@@ -37,8 +37,14 @@ public class ProductRepository
             query = query.Where(x => x.IsAvailable == getProductsDto.IsAvailable);
         }
         query = query.OrderByDescending(x => x.Id);
-        
-        var result = await PagedHelper.CreateAsync<Product>(query, getProductsDto.Page, getProductsDto.PageSize);
+
+        var result = await PagedHelper.CreateAsync(
+            query,
+            getProductsDto.Page,
+            getProductsDto.PageSize,
+            x => x.Id,
+            isDescending: true
+        );
 
         return result;
     }

@@ -24,6 +24,11 @@ export class ProductService {
       params: {
         page: params.page?.toString() ?? '1',
         pageSize: params.pageSize?.toString() ?? '10',
+        name: params.name ?? '',
+        isAvailable:
+          params.isAvailable !== null && params.isAvailable !== undefined
+            ? params.isAvailable.toString()
+            : '',
       },
     });
   }

@@ -21,4 +21,6 @@ export interface UpdateProductDto extends Partial<CreateProductDto> {
 export interface ProductsParams {
   page: number;
   pageSize: number;
+  name: string | null;
+  isAvailable: boolean | null;
 }
