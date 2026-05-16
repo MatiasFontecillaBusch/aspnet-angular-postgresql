@@ -22,7 +22,8 @@ public class ProductsService : IProductsService
         var product = new Product
         {
             Name = createProductDto.Name!,
-            Price = createProductDto.Price!.Value
+            Price = createProductDto.Price!.Value,
+            Stock = createProductDto.Stock!.Value
         };
 
         return await this._productRepository.CreateAsync(product);
@@ -61,6 +62,7 @@ public class ProductsService : IProductsService
 
         existingProduct.Name = updateProductDto.Name ?? existingProduct.Name;
         existingProduct.Price = updateProductDto.Price ?? existingProduct.Price;
+        existingProduct.Stock = updateProductDto.Stock ?? existingProduct.Stock;
 
         var updatedProduct = await _productRepository.UpdateOneProduct(existingProduct);
 

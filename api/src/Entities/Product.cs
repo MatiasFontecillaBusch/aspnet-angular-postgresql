@@ -9,4 +9,5 @@ public class Product
     public decimal Price { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public bool IsAvailable { get; set; } = true;
+    public int Stock { get; set; } = 0;
 }
