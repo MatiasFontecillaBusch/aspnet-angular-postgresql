@@ -1,0 +1,141 @@
+<div class="min-h-screen bg-slate-50 p-4 sm:p-8">
+  <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div>
+      <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Panel de Productos</h1>
+      <p class="text-slate-500 mt-1">Gestiona el inventario y precios de tu catálogo.</p>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <button (click)="openCreateModal()"
+        class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-2xl font-bold shadow-lg shadow-blue-200 transition-all active:scale-95">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        Nuevo Producto
+      </button>
+
+      <div class="flex items-center gap-3 bg-white p-2 rounded-2xl shadow-sm border border-slate-200">
+        <div class="bg-blue-50 text-blue-600 p-2 rounded-xl">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+          </svg>
+        </div>
+        <div class="pr-4">
+          <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Total</p>
+          <p class="text-xl font-black text-slate-800">{{ paginatedProducts()?.totalCount ?? 0 }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if (paginatedProducts(); as response) {
+  <div class=" bg-white rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-200 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-separate border-spacing-0">
+        <thead>
+          <tr class="bg-slate-50/50">
+            <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100">
+              ID</th>
+            <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100">
+              Producto</th>
+            <th
+              class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100 text-center">
+              Precio</th>
+            <th
+              class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100 text-center">
+              Stock</th>
+            <th
+              class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100 text-center">
+              Estado</th>
+            <th
+              class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100 text-center">
+              Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          @for (product of response.items; track product.id) {
+          <tr class="group hover:bg-blue-50/30 transition-all duration-200">
+            <td class="px-6 py-4 text-sm font-medium text-slate-400 font-mono">#{{ product.id }}</td>
+            <td class="px-6 py-4">
+              <span class="text-sm font-semibold text-slate-700 group-hover:text-blue-600 transition-colors">
+                {{ product.name || 'Sin nombre' }}
+              </span>
+            </td><td class="px-6 py-4 text-sm text-center">
+              <span class="font-bold text-slate-900 bg-slate-100 px-2 py-1 rounded-lg">
+                {{ product.price | currency:'USD' }}
+              </span>
+            </td><td class="px-6 py-4 text-sm text-center">
+              <span class="font-bold text-slate-900 bg-slate-100 px-2 py-1 rounded-lg">
+                {{ product.stock }}
+              </span>
+            </td>
+            <td class="px-6 py-4 flex justify-center">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ring-1 ring-inset"
+                [class]="product.isAvailable ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/20' : 'bg-rose-50 text-rose-700 ring-rose-600/20'">
+                <span class="w-1.5 h-1.5 rounded-full"
+                  [class]="product.isAvailable ? 'bg-emerald-500' : 'bg-rose-500'"></span>
+                {{ product.isAvailable ? 'Disponible' : 'Deshabilitado' }}
+              </span>
+            </td>
+            <td class="px-6 py-4 text-center">
+              <div class="flex justify-center gap-2">
+                <!-- <button class="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+                  title="Ver detalles">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </button> -->
+
+                <button (click)="openEditModal(product)" [disabled]="!product.isAvailable"
+                  class="p-2 rounded-xl transition-all" [class]="product.isAvailable
+                    ? 'text-slate-400 hover:text-blue-600 hover:bg-blue-50'
+                    : 'text-slate-200 cursor-not-allowed bg-slate-50'"
+                  [title]="product.isAvailable ? 'Editar producto' : 'No se puede editar un producto no disponible'">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                </button>
+                @if (product.isAvailable) {
+                <app-delete-product-button [id]="product.id" (saved)="loadProducts()" />
+                } @else {
+                <app-restore-product-button [id]="product.id" (saved)="loadProducts()" />
+                }
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <div class="bg-slate-50/50 border-t border-slate-100 px-6 py-4">
+      <app-paginator [(pageNumber)]="productsParams().page" [(pageSize)]="productsParams().pageSize"
+        [totalCount]="response.totalCount" [totalPages]="response.totalPages" (pageChange)="onPageChange($event)" />
+    </div>
+  </div>
+  } @else {
+  <div
+    class="max-w-7xl mx-auto bg-white rounded-3xl p-12 border border-dashed border-slate-300 flex flex-col items-center">
+    <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+    <p class="mt-4 text-slate-400 font-medium text-lg">Obteniendo catálogo desde el servidor...</p>
+  </div>
+  }
+</div>
+
+<dialog #editModal
+  class="backdrop:bg-slate-900/50 backdrop:backdrop-blur-sm rounded-3xl shadow-2xl p-0 overflow-hidden border-none m-auto">
+  <div class="w-[90vw] max-w-2xl bg-white">
+    <app-edit-product-form [product]="selectedProduct()" (close)="closeModal()" />
+  </div>
+</dialog>
+
+<dialog #createModal
+  class="backdrop:bg-slate-900/50 backdrop:backdrop-blur-sm rounded-3xl shadow-2xl p-0 overflow-hidden border-none m-auto">
+  <div class="w-[90vw] max-w-2xl bg-white">
+    <app-create-product-form (close)="closeCreateModal()" />
+  </div>
+</dialog>

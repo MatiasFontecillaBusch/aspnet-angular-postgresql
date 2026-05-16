@@ -3,6 +3,7 @@ export interface Product {
   name: string;
   price: number;
   isAvailable: boolean;
+  stock: number;
 
   createdAt: Date | string;
 }
@@ -10,6 +11,7 @@ export interface Product {
 export interface CreateProductDto {
   name: string;
   price: number;
+  stock: number;
 }
 
 export interface UpdateProductDto extends Partial<CreateProductDto> {
