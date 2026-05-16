@@ -21,8 +21,8 @@ public class ProductRepository
     public async Task<(IEnumerable<Product> Items, int TotalCount)> ReadAvailableAsync(int page, int pageSize)
     {
         var query = _context.Products
-            .AsNoTracking()
-            .Where(p => p.IsAvailable);
+            .AsNoTracking();
+            // .Where(p => p.IsAvailable);
 
         var totalCount = await query.CountAsync();
 
@@ -55,5 +55,16 @@ public class ProductRepository
 
         await _context.SaveChangesAsync();
         return true;
+    }
+    public async Task<Product?> RestoreProductByIdAsync(int id)
+    {
+        var product = await _context.Products.FindAsync(id);
+
+        if (product == null) return null;
+
+        product.IsAvailable = true;
+
+        await _context.SaveChangesAsync();
+        return product;
     }
 }

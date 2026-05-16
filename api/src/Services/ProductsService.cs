@@ -71,5 +71,11 @@ public class ProductsService : IProductsService
         var result = await _productRepository.SoftDeleteProductByIdAsync(id);
         if (!result) throw new AppError("No se encontró el producto para eliminar", 404);
     }
+    public async Task<Product> RestoreProduct(int id)
+    {
+        var result = await _productRepository.RestoreProductByIdAsync(id);
+        if (result == null) throw new AppError("No se encontró el producto para restaurar", 404);
+        return result;
+    }
 
 }

@@ -12,5 +12,6 @@ interface IProductsService
     Task<PagedResponse<Product>> ReadProducts(GetProductsDto getProductsDto);
     Task<Product> UpdateProduct(int id, UpdateProductDto updateProductDto);
     Task DeleteProduct(int id);
+    Task<Product> RestoreProduct(int id);
 
 }

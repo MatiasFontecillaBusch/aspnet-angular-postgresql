@@ -44,6 +44,14 @@ namespace api.src.Controllers
             return Ok(result);
         }
 
+
+        [HttpPost("{id}/restore")]
+        public async Task<ActionResult<Product>> RestoreProduct(int id, UpdateProductDto updateProductDto)
+        {
+            var result = await _productService.RestoreProduct(id);
+            return Ok(result);
+        }
+
         [HttpDelete("{id}")]
         public async Task<ActionResult<Product>> DeleteProduct(int id)
         {
