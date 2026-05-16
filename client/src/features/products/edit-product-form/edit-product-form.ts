@@ -48,18 +48,15 @@ export class EditProductForm {
 
     this.productService.updateProduct(this.product()?.id ?? 0, updateProduct).subscribe({
       next: (res) => {
-        console.log({ res });
         this.close.emit();
       },
       error: (error) => {
-        console.log({ error });
         this.validationErrors.set(error);
       },
     });
   }
 
   onCancel() {
-    console.log('CANCEL');
     this.close.emit();
   }
 }

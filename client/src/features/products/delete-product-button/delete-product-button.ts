@@ -15,11 +15,9 @@ export class DeleteProductButton {
   deleteProduct() {
     this.productService.deleteProduct(this.id()).subscribe({
       next: () => {
-        console.log(':D');
         this.saved.emit();
       },
       error: (error) => {
-        console.log({ error });
       },
     });
   }

@@ -36,18 +36,15 @@ export class CreateProductForm {
 
     this.productService.createProduct(createProductDto).subscribe({
       next: (res) => {
-        console.log({ res });
         this.close.emit();
       },
       error: (error) => {
-        console.log({ error });
         this.validationErrors.set(error);
       },
     });
   }
 
   onCancel() {
-    console.log('CANCEL');
     this.close.emit();
   }
 }

@@ -15,11 +15,9 @@ export class RestoreProductButton {
   restoreProduct() {
     this.productService.restoreProduct(this.id()).subscribe({
       next: () => {
-        console.log(':D');
         this.saved.emit();
       },
       error: (error) => {
-        console.log({ error });
       },
     });
   }

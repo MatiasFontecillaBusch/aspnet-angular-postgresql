@@ -51,7 +51,6 @@ export class App {
   }
 
   loadProducts() {
-    console.log("LOAD")
     this.productService.readProducts(this.productsParams()).subscribe({
       next: (result) => this.paginatedProducts.set(result),
     });
@@ -68,7 +67,6 @@ export class App {
   }
 
   openCreateModal() {
-    console.log("CREATE")
     this.createModal()?.nativeElement.showModal(); // Método nativo para abrir modal
   }
 
