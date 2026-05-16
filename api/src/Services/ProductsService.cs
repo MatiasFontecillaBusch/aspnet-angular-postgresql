@@ -38,7 +38,7 @@ public class ProductsService : IProductsService
     }
     public async Task<PagedResponse<Product>> ReadProducts(GetProductsDto getProductsDto)
     {
-        return await _productRepository.ReadAvailableAsync(getProductsDto);
+        return await _productRepository.ReadAllAsync(getProductsDto);
     }
     public async Task<Product> UpdateProduct(int id, UpdateProductDto updateProductDto)
     {

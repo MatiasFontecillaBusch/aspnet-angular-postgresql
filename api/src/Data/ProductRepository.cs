@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.src.Data;
 
-public class ProductRepository
+public class ProductRepository: IProductRepository
 {
     private readonly AppDbContext _context;
     public ProductRepository(AppDbContext context)
@@ -20,7 +20,7 @@ public class ProductRepository
 
         return product;
     }
-    public async Task<PagedResponse<Product>> ReadAvailableAsync(GetProductsDto getProductsDto)
+    public async Task<PagedResponse<Product>> ReadAllAsync(GetProductsDto getProductsDto)
     {
         var query = _context.Products
             .AsNoTracking().AsQueryable();
@@ -28,7 +28,6 @@ public class ProductRepository
         if (!string.IsNullOrWhiteSpace(getProductsDto.Name))
         {
             var searchTerm = getProductsDto.Name.Trim().ToLower();
-            Console.Write(searchTerm);
             query = query.Where(x => x.Name != null && x.Name.ToLower().Contains(searchTerm));
         }
 
