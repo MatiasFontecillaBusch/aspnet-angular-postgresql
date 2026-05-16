@@ -9,6 +9,7 @@ import { EditProductForm } from '../edit-product-form/edit-product-form';
 import { CreateProductForm } from '../create-product-form/create-product-form';
 import { DeleteProductButton } from '../delete-product-button/delete-product-button';
 import { RestoreProductButton } from '../restore-product-button/restore-product-button';
+import { StockFormatPipe } from '../../../core/pipes/stock-pipe';
 
 @Component({
   selector: 'app-list-products',
@@ -19,6 +20,7 @@ import { RestoreProductButton } from '../restore-product-button/restore-product-
     CreateProductForm,
     DeleteProductButton,
     RestoreProductButton,
+    StockFormatPipe
   ],
   templateUrl: './list-products.html',
   styleUrl: './list-products.css',
