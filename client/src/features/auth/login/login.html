@@ -42,7 +42,8 @@
               Contraseña
             </label>
             <div class="text-sm">
-              <a href="#" class="font-semibold text-blue-600 hover:text-blue-700 transition-colors">
+              <a routerLink="/restore-password"
+                class="font-semibold text-blue-600 hover:text-blue-700 transition-colors">
                 ¿La olvidaste?
               </a>
             </div>
@@ -68,7 +69,7 @@
         </div>
 
         <div>
-          <button type="submit"
+          <button type="submit" (click)="login()"
             class="w-full flex justify-center items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl font-bold shadow-lg shadow-blue-200 transition-all active:scale-[0.98]">
             Ingresar al Panel
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
