@@ -1,0 +1,62 @@
+<div class="h-full flex flex-col bg-white border-l border-slate-200 shadow-2xl animate-fade-in">
+  <div class="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+    <div>
+      <span class="text-xs font-bold uppercase tracking-widest text-slate-400 font-mono">
+        #{{ product()?.id }}
+      </span>
+      <h2 class="text-xl font-extrabold text-slate-900 tracking-tight mt-0.5">
+        Detalle del Producto
+      </h2>
+    </div>
+
+    <button (click)="close.emit()"
+      class="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all active:scale-95">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+
+  @if (product(); as prod) {
+  <div class="flex-1 overflow-y-auto p-6 space-y-6">
+    <div>
+      <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Nombre</label>
+      <p class="text-lg font-bold text-slate-800 mt-1">{{ prod.name || 'Sin nombre' }}</p>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Precio</label>
+        <p class="text-lg font-black text-blue-600 mt-1">
+          {{ prod.price | currency:'CLP' }}
+        </p>
+      </div>
+      <div>
+        <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Stock Disponible</label>
+        <p class="text-lg font-bold text-slate-800 mt-1">
+          {{ prod.stock }} unidades
+        </p>
+      </div>
+    </div>
+
+    <div>
+      <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Estado en Catálogo</label>
+      <div class="mt-2">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ring-1 ring-inset"
+          [class]="prod.isAvailable ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/20' : 'bg-rose-50 text-rose-700 ring-rose-600/20'">
+          <span class="w-1.5 h-1.5 rounded-full" [class]="prod.isAvailable ? 'bg-emerald-500' : 'bg-rose-500'"></span>
+          {{ prod.isAvailable ? 'Habilitado para la venta' : 'Deshabilitado / Inactivo' }}
+        </span>
+      </div>
+    </div>
+  </div>
+  } @else {
+  <div class="flex-1 flex flex-col items-center justify-center p-6 text-center text-slate-400">
+    <svg class="w-12 h-12 text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+    </svg>
+    <p class="font-medium">No se ha seleccionado ningún producto.</p>
+  </div>
+  }
+</div>

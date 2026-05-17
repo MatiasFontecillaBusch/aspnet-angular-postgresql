@@ -1,20 +1,13 @@
 <div class="min-h-screen bg-slate-50 p-4 sm:p-8">
   <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
     <div>
-      <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Panel de Productos</h1>
-      <p class="text-slate-500 mt-1">Gestiona el inventario y precios de tu catálogo.</p>
+      <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Panel de Productos</h1>
+      <p class="text-slate-500 text-sm sm:text-base mt-1">Gestiona el inventario y precios de tu catálogo.</p>
     </div>
 
-    <div class="flex items-center gap-4">
-      <button (click)="openCreateModal()"
-        class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-2xl font-bold shadow-lg shadow-blue-200 transition-all active:scale-95">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-        </svg>
-        Nuevo Producto
-      </button>
-
-      <div class="flex items-center gap-3 bg-white p-2 rounded-2xl shadow-sm border border-slate-200">
+    <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-4">
+      <div
+        class="flex items-center gap-3 bg-white p-2 rounded-2xl shadow-sm border border-slate-200 justify-center sm:justify-start">
         <div class="bg-blue-50 text-blue-600 p-2 rounded-xl">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -26,12 +19,20 @@
           <p class="text-xl font-black text-slate-800">{{ paginatedProducts()?.totalCount ?? 0 }}</p>
         </div>
       </div>
+
+      <button (click)="openCreateModal()"
+        class="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 sm:py-2.5 rounded-2xl font-bold shadow-lg shadow-blue-200 transition-all active:scale-95">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        Nuevo Producto
+      </button>
     </div>
   </div>
 
   <div
-    class="mb-6 flex flex-col sm:flex-row items-center gap-4 bg-white p-4 rounded-3xl border border-slate-200 shadow-sm">
-    <div class="relative w-full sm:flex-1">
+    class="mb-6 flex flex-col md:flex-row items-center gap-4 bg-white p-4 rounded-3xl border border-slate-200 shadow-sm">
+    <div class="relative w-full md:flex-1">
       <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -43,7 +44,7 @@
         class="w-full pl-11 pr-4 py-2.5 rounded-xl border border-slate-200 focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all placeholder:text-slate-400 text-slate-700 text-sm font-medium" />
     </div>
 
-    <div class="relative w-full sm:w-64">
+    <div class="relative w-full md:w-64">
       <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -61,108 +62,207 @@
     </div>
   </div>
 
-  @if (paginatedProducts(); as response) {
-  <div class="bg-white rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-200 overflow-hidden">
-    <div class="overflow-x-auto">
-      <table class="w-full text-left border-separate border-spacing-0">
-        <thead>
-          <tr class="bg-slate-50/50">
-            <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100">
-              ID</th>
-            <th class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100">
-              Producto</th>
-            <th
-              class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100 text-center">
-              Precio</th>
-            <th
-              class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100 text-center">
-              Stock</th>
-            <th
-              class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100 text-center">
-              Estado</th>
-            <th
-              class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100 text-center">
-              Acciones</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-slate-100">
-          @for (product of response.items; track product.id) {
-          <tr class="group hover:bg-blue-50/30 transition-all duration-200">
-            <td class="px-6 py-4 text-sm font-medium text-slate-400 font-mono">#{{ product.id }}</td>
-            <td class="px-6 py-4">
-              <span class="text-sm font-semibold text-slate-700 group-hover:text-blue-600 transition-colors">
-                {{ product.name || 'Sin nombre' }}
-              </span>
-            </td>
-            <td class="px-6 py-4 text-sm text-center">
-              <span class="font-bold text-slate-900 bg-slate-100 px-2 py-1 rounded-lg">
-                {{ product.price | currency:'CLP' }}
-              </span>
-            </td>
-            <td class="px-6 py-4 text-sm text-center">
-              <span class="font-bold px-2 py-1 rounded-lg" [class]="product.stock && product.stock > 0
-                                  ? 'text-slate-900 bg-slate-100'
-                                  : 'text-rose-600 bg-rose-50 border border-rose-100'">
-                {{ product.stock | stockFormat }}
-              </span>
-            </td>
-            <td class="px-6 py-4 flex justify-center">
-              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ring-1 ring-inset"
-                [class]="product.isAvailable ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/20' : 'bg-rose-50 text-rose-700 ring-rose-600/20'">
-                <span class="w-1.5 h-1.5 rounded-full"
-                  [class]="product.isAvailable ? 'bg-emerald-500' : 'bg-rose-500'"></span>
-                {{ product.isAvailable ? 'Habilitado' : 'Deshabilitado' }}
-              </span>
-            </td>
-            <td class="px-6 py-4 text-center">
-              <div class="flex justify-center gap-2">
-                <button (click)="openEditModal(product)" [disabled]="!product.isAvailable"
-                  class="p-2 rounded-xl transition-all" [class]="product.isAvailable
-                    ? 'text-slate-400 hover:text-blue-600 hover:bg-blue-50'
-                    : 'text-slate-200 cursor-not-allowed bg-slate-50'"
-                  [title]="product.isAvailable ? 'Editar producto' : 'No se puede editar un producto no disponible'">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                  </svg>
-                </button>
-                @if (product.isAvailable) {
-                <app-delete-product-button [id]="product.id" (saved)="loadProducts()" />
-                } @else {
-                <app-restore-product-button [id]="product.id" (saved)="loadProducts()" />
-                }
-              </div>
-            </td>
-          </tr>
+  <div class="flex flex-col md:flex-row gap-6 items-start relative w-full">
+
+    @if (paginatedProducts(); as response) {
+    <div class="w-full md:hidden flex flex-col gap-4">
+      @for (product of response.items; track product.id) {
+      <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col gap-4"
+        [class.ring-2]="selectedProduct()?.id === product.id && isSideBarOpen()"
+        [class.ring-blue-500]="selectedProduct()?.id === product.id && isSideBarOpen()">
+
+        <div class="flex justify-between items-start">
+          <div>
+            <span class="text-xs font-mono text-slate-400 font-bold block">#{{ product.id }}</span>
+            <span class="text-base font-bold text-slate-800">{{ product.name || 'Sin nombre' }}</span>
+          </div>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ring-1 ring-inset"
+            [class]="product.isAvailable ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/20' : 'bg-rose-50 text-rose-700 ring-rose-600/20'">
+            {{ product.isAvailable ? 'Habilitado' : 'Deshabilitado' }}
+          </span>
+        </div>
+
+        <div class="flex justify-between items-center bg-slate-50 p-3 rounded-xl">
+          <div>
+            <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Precio</p>
+            <p class="text-sm font-black text-slate-900">{{ product.price | currency:'CLP' }}</p>
+          </div>
+          <div class="text-right">
+            <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Stock</p>
+            <p class="text-sm font-bold"
+              [class]="product.stock && product.stock > 0 ? 'text-slate-800' : 'text-rose-600'">
+              {{ product.stock | stockFormat }}
+            </p>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 border-t border-slate-100 pt-3">
+          <button (click)="openDetailsSideBar(product)"
+            class="p-2.5 rounded-xl text-slate-500 hover:bg-slate-100 bg-slate-50 border border-slate-200"
+            title="Ver detalles">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+          </button>
+          <button (click)="openEditModal(product)" [disabled]="!product.isAvailable"
+            class="p-2.5 rounded-xl border transition-all"
+            [class]="product.isAvailable ? 'text-slate-600 bg-slate-50 border-slate-200 hover:bg-blue-50 hover:text-blue-600' : 'text-slate-300 bg-slate-50 border-slate-100 cursor-not-allowed'">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+            </svg>
+          </button>
+          @if (product.isAvailable) {
+          <app-delete-product-button [id]="product.id" (saved)="loadProducts()" />
+          } @else {
+          <app-restore-product-button [id]="product.id" (saved)="loadProducts()" />
           }
-        </tbody>
-      </table>
+        </div>
+      </div>
+      }
+
+      <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
+        <app-paginator [(pageNumber)]="productsParams().page" [(pageSize)]="productsParams().pageSize"
+          [totalCount]="response.totalCount" [totalPages]="response.totalPages" (pageChange)="onPageChange($event)" />
+      </div>
     </div>
 
-    <div class="bg-slate-50/50 border-t border-slate-100 px-6 py-4">
-      <app-paginator [(pageNumber)]="productsParams().page" [(pageSize)]="productsParams().pageSize"
-        [totalCount]="response.totalCount" [totalPages]="response.totalPages" (pageChange)="onPageChange($event)" />
+    <div
+      class="hidden md:flex flex-1 bg-white rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-200 overflow-hidden transition-all duration-300 flex-col min-h-[calc(100vh-240px)]">
+      <div class="overflow-x-auto flex-1">
+        <table class="w-full text-left border-separate border-spacing-0">
+          <thead>
+            <tr class="bg-slate-50/50">
+              <th
+                class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100">
+                ID</th>
+              <th
+                class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100">
+                Producto</th>
+              <th
+                class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100 text-center">
+                Precio</th>
+              <th
+                class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100 text-center">
+                Stock</th>
+              <th
+                class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100 text-center">
+                Estado</th>
+              <th
+                class="px-6 py-4 text-xs font-bold uppercase tracking-widest text-slate-400 border-b border-slate-100 text-center">
+                Acciones</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            @for (product of response.items; track product.id) {
+            <tr class="group hover:bg-blue-50/30 transition-all duration-200"
+              [class.bg-blue-50]="selectedProduct()?.id === product.id && isSideBarOpen()">
+              <td class="px-6 py-4 text-sm font-medium text-slate-400 font-mono">#{{ product.id }}</td>
+              <td class="px-6 py-4">
+                <span class="text-sm font-semibold text-slate-700 group-hover:text-blue-600 transition-colors">
+                  {{ product.name || 'Sin nombre' }}
+                </span>
+              </td>
+              <td class="px-6 py-4 text-sm text-center">
+                <span class="font-bold text-slate-900 bg-slate-100 px-2 py-1 rounded-lg">
+                  {{ product.price | currency:'CLP' }}
+                </span>
+              </td>
+              <td class="px-6 py-4 text-sm text-center">
+                <span class="font-bold px-2 py-1 rounded-lg"
+                  [class]="product.stock && product.stock > 0 ? 'text-slate-900 bg-slate-100' : 'text-rose-600 bg-rose-50 border border-rose-100'">
+                  {{ product.stock | stockFormat }}
+                </span>
+              </td>
+              <td class="px-6 py-4 flex justify-center">
+                <span
+                  class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ring-1 ring-inset"
+                  [class]="product.isAvailable ? 'bg-emerald-50 text-emerald-700 ring-emerald-600/20' : 'bg-rose-50 text-rose-700 ring-rose-600/20'">
+                  <span class="w-1.5 h-1.5 rounded-full"
+                    [class]="product.isAvailable ? 'bg-emerald-500' : 'bg-rose-500'"></span>
+                  {{ product.isAvailable ? 'Habilitado' : 'Deshabilitado' }}
+                </span>
+              </td>
+              <td class="px-6 py-4 text-center">
+                <div class="flex justify-center gap-1">
+                  <button (click)="openDetailsSideBar(product)"
+                    class="p-2 rounded-xl text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all"
+                    title="Ver detalles del producto">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  </button>
+
+                  <button (click)="openEditModal(product)" [disabled]="!product.isAvailable"
+                    class="p-2 rounded-xl transition-all"
+                    [class]="product.isAvailable ? 'text-slate-400 hover:text-blue-600 hover:bg-blue-50' : 'text-slate-200 cursor-not-allowed bg-slate-50'"
+                    [title]="product.isAvailable ? 'Editar producto' : 'No se puede editar un producto no disponible'">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                  </button>
+
+                  @if (product.isAvailable) {
+                  <app-delete-product-button [id]="product.id" (saved)="loadProducts()" />
+                  } @else {
+                  <app-restore-product-button [id]="product.id" (saved)="loadProducts()" />
+                  }
+                </div>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="bg-slate-50/50 border-t border-slate-100 px-6 py-4 mt-auto">
+        <app-paginator [(pageNumber)]="productsParams().page" [(pageSize)]="productsParams().pageSize"
+          [totalCount]="response.totalCount" [totalPages]="response.totalPages" (pageChange)="onPageChange($event)" />
+      </div>
     </div>
+    } @else {
+    <div
+      class="max-w-7xl mx-auto bg-white rounded-3xl p-12 border border-dashed border-slate-300 flex flex-col items-center w-full">
+      <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      <p class="mt-4 text-slate-400 font-medium text-lg">Obteniendo catálogo desde el servidor...</p>
+    </div>
+    }
+
+    <div class="transition-all duration-300 ease-in-out"
+      [class]="isSideBarOpen()
+            ? 'fixed inset-x-0 bottom-0 z-50 w-full h-[60vh] opacity-100 md:sticky md:top-4 md:h-full md:w-80 md:z-10'
+            : 'fixed inset-x-0 bottom-[-100%] z-50 w-full h-[60vh] opacity-0 pointer-events-none md:sticky md:top-4 md:h-full md:w-0 md:opacity-0 md:overflow-hidden'">
+
+      @if (isSideBarOpen()) {
+      <div (click)="closeDetailsSideBar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm md:hidden -z-10"></div>
+      }
+
+      <div class="h-full w-full rounded-t-3xl md:rounded-none overflow-hidden">
+        <app-details-products-side-card [product]="selectedProduct()" (close)="closeDetailsSideBar()"
+          class="block h-full md:[&>div]:border-l" />
+      </div>
+    </div>
+
   </div>
-  } @else {
-  <div
-    class="max-w-7xl mx-auto bg-white rounded-3xl p-12 border border-dashed border-slate-300 flex flex-col items-center">
-    <div class="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-    <p class="mt-4 text-slate-400 font-medium text-lg">Obteniendo catálogo desde el servidor...</p>
-  </div>
-  }
 </div>
 
 <dialog #editModal
   class="backdrop:bg-slate-900/50 backdrop:backdrop-blur-sm rounded-3xl shadow-2xl p-0 overflow-hidden border-none m-auto">
-  <div class="w-[90vw] max-w-2xl bg-white">
+  <div class="w-[95vw] sm:w-[90vw] max-w-2xl bg-white">
     <app-edit-product-form [product]="selectedProduct()" (close)="closeModal()" />
   </div>
 </dialog>
 
 <dialog #createModal
   class="backdrop:bg-slate-900/50 backdrop:backdrop-blur-sm rounded-3xl shadow-2xl p-0 overflow-hidden border-none m-auto">
-  <div class="w-[90vw] max-w-2xl bg-white">
+  <div class="w-[95vw] sm:w-[90vw] max-w-2xl bg-white">
     <app-create-product-form (close)="closeCreateModal()" />
   </div>
 </dialog>

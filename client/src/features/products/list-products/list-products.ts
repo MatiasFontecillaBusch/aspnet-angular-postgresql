@@ -10,6 +10,7 @@ import { CreateProductForm } from '../create-product-form/create-product-form';
 import { DeleteProductButton } from '../delete-product-button/delete-product-button';
 import { RestoreProductButton } from '../restore-product-button/restore-product-button';
 import { StockFormatPipe } from '../../../core/pipes/stock-pipe';
+import { DetailsProductsSideCard } from '../details-products-side-card/details-products-side-card';
 
 @Component({
   selector: 'app-list-products',
@@ -21,6 +22,7 @@ import { StockFormatPipe } from '../../../core/pipes/stock-pipe';
     DeleteProductButton,
     RestoreProductButton,
     StockFormatPipe,
+    DetailsProductsSideCard,
   ],
   templateUrl: './list-products.html',
   styleUrl: './list-products.css',
@@ -34,6 +36,7 @@ export class ListProducts {
   protected readonly title = signal('client');
   protected paginatedProducts = signal<PagedResponse<Product> | null>(null);
   protected selectedProduct = signal<Product | null>(null);
+  protected isSideBarOpen = signal<boolean>(false);
   protected productsParams = signal<ProductsParams>({
     page: 1,
     pageSize: 10,
@@ -98,6 +101,15 @@ export class ListProducts {
     this.productService.readProducts(this.productsParams()).subscribe({
       next: (result) => this.paginatedProducts.set(result),
     });
+  }
+
+  openDetailsSideBar(product: Product) {
+    this.selectedProduct.set(product);
+    this.isSideBarOpen.set(true);
+  }
+
+  closeDetailsSideBar() {
+    this.isSideBarOpen.set(false);
   }
 
   openEditModal(product: Product) {
