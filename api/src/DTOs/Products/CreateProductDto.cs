@@ -13,6 +13,6 @@ public class CreateProductDto
     public decimal? Price { get; set; }
 
     [Required(ErrorMessage = "El precio es obligatorio.")]
-    [Range(1, int.MaxValue, ErrorMessage = "El stock debe ser mayor a 0.")]
+    [Range(-1, int.MaxValue, ErrorMessage = "El stock debe ser mayor a -1.")]
     public int? Stock { get; set; }
 }

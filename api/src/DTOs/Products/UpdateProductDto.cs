@@ -12,6 +12,6 @@ public class UpdateProductDto
     [Range(0.01, 1000000, ErrorMessage = "El precio debe ser mayor a 0.")]
     public decimal? Price { get; set; }
 
-    [Range(1, int.MaxValue, ErrorMessage = "El stock debe ser mayor a 0.")]
+    [Range(1, int.MaxValue, ErrorMessage = "El stock debe ser mayor a -1.")]
     public int? Stock { get; set; }
 }

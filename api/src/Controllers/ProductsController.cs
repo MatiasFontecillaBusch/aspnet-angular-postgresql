@@ -18,7 +18,8 @@ namespace api.src.Controllers
         [HttpPost]
         public async Task<ActionResult<Product>> CreateProduct(CreateProductDto createProductDto)
         {
-            var result = await _productService.CreateProduct(createProductDto, "");
+            var userId = HttpContext.Items["tokenUserId"] as string;
+            var result = await _productService.CreateProduct(createProductDto, userId!);
             return CreatedAtAction(nameof(ReadProductById), new { id = result.Id }, result);
         }
         [HttpGet]
