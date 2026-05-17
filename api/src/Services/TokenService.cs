@@ -39,7 +39,7 @@ public class TokenService(IRolesRepository _rolesRepository, IConfiguration _con
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = expiresAt, // <-- Aplicamos los días aquí
+            Expires = expiresAt,
             SigningCredentials = creds,
             Issuer = _config["Jwt:Issuer"],
             Audience = _config["Jwt:Audience"]

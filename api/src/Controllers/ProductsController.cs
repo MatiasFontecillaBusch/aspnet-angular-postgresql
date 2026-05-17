@@ -3,6 +3,7 @@ using api.src.Entities;
 using api.src.Interfaces;
 using api.src.Responses;
 using api.src.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,9 +11,9 @@ namespace api.src.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductsController(IProductsService productsService) : ControllerBase
+    [Authorize(Roles = "Administrator")]
+    public class ProductsController(IProductsService _productService) : ControllerBase
     {
-        private readonly IProductsService _productService = productsService;
 
         [HttpPost]
         public async Task<ActionResult<Product>> CreateProduct(CreateProductDto createProductDto)
