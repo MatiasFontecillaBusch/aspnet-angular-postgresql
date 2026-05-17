@@ -1,36 +1,29 @@
 using System;
-using api.src.Data;
 using api.src.DTOs;
 using api.src.Entities;
 using api.src.Exceptions;
 using api.src.Interfaces;
 using api.src.Responses;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace api.src.Services;
 
-public class ProductsService : IProductsService
+public class ProductsService(IProductRepository _productRepository) : IProductsService
 {
-    private readonly ProductRepository _productRepository;
-    public ProductsService(ProductRepository productRepository)
-    {
-        _productRepository = productRepository;
-    }
-
-    public async Task<Product> CreateProduct(CreateProductDto createProductDto)
+    public async Task<Product> CreateProduct(CreateProductDto createProductDto, string createdById)
     {
         var product = new Product
         {
             Name = createProductDto.Name!,
             Price = createProductDto.Price!.Value,
-            Stock = createProductDto.Stock!.Value
+            Stock = createProductDto.Stock!.Value,
+            CreatedById = createdById
         };
 
-        return await this._productRepository.CreateAsync(product);
+        return await _productRepository.CreateAsync(product);
     }
     public async Task<Product> ReadProductById(int id)
     {
-        var product = await this._productRepository.ReadOneAvailableByIdAsync(id);
+        var product = await _productRepository.ReadOneAvailableByIdAsync(id);
 
         if (product == null) throw new AppError("No se encontró un producto con esa id", 404);
 

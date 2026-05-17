@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using api.src.Data;
@@ -11,9 +12,11 @@ using api.src.Data;
 namespace api.src.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260516234050_AddUserEntity")]
+    partial class AddUserEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,7 +59,7 @@ namespace api.src.Data.Migrations
                         new
                         {
                             Id = "admin-id",
-                            ConcurrencyStamp = "b7a699cb-80df-432f-b340-d2052a608de5",
+                            ConcurrencyStamp = "40a20c10-42c6-4d1e-be8a-284d20ffe757",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         });

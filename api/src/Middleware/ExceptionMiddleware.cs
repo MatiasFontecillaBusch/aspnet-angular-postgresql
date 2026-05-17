@@ -23,9 +23,10 @@ public class ExceptionMiddleware
             var response = new { error = ex.Message };
             await context.Response.WriteAsJsonAsync(response);
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             // Error genérico (500) para errores no controlados
+            Console.Write(ex);
             context.Response.StatusCode = 500;
             await context.Response.WriteAsJsonAsync(new { error = "Internal Server Error" });
         }

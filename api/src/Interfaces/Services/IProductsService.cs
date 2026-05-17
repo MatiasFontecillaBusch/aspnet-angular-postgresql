@@ -5,9 +5,9 @@ using api.src.Responses;
 
 namespace api.src.Interfaces;
 
-interface IProductsService
+public interface IProductsService
 {
-    Task<Product> CreateProduct(CreateProductDto createProductDto);
+    Task<Product> CreateProduct(CreateProductDto createProductDto, string createdById);
     Task<Product> ReadProductById(int id);
     Task<PagedResponse<Product>> ReadProducts(GetProductsDto getProductsDto);
     Task<Product> UpdateProduct(int id, UpdateProductDto updateProductDto);

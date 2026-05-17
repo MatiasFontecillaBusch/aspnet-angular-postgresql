@@ -1,5 +1,7 @@
 using api.src.DTOs;
 using api.src.Entities;
+using api.src.Interfaces;
+using api.src.Responses;
 using api.src.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,23 +10,18 @@ namespace api.src.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductsController : ControllerBase
+    public class ProductsController(IProductsService productsService) : ControllerBase
     {
-        private readonly ProductsService _productService;
-
-        public ProductsController(ProductsService productsService)
-        {
-            _productService = productsService;
-        }
+        private readonly IProductsService _productService = productsService;
 
         [HttpPost]
         public async Task<ActionResult<Product>> CreateProduct(CreateProductDto createProductDto)
         {
-            var result = await _productService.CreateProduct(createProductDto); 
+            var result = await _productService.CreateProduct(createProductDto, "");
             return CreatedAtAction(nameof(ReadProductById), new { id = result.Id }, result);
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> ReadProducts([FromQuery] GetProductsDto getProductsDto)
+        public async Task<ActionResult<PagedResponse<Product>>> ReadProducts([FromQuery] GetProductsDto getProductsDto)
         {
             var paginatedResponse = await _productService.ReadProducts(getProductsDto);
             return Ok(paginatedResponse);
