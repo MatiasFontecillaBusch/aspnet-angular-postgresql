@@ -11,15 +11,17 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
-        policy =>
-        {
-            policy.AllowAnyOrigin()
-                  .AllowAnyMethod()
-                  .AllowAnyHeader();
-        });
+    options.AddPolicy("AppCorsPolicy", policy =>
+    {
+        policy.WithOrigins(allowedOrigins!)
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
 });
 
 builder.Services.AddControllers();
@@ -54,6 +56,26 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
             ValidateLifetime = true,
         };
+
+        opts.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var authHeader = context.Request.Headers["Authorization"].ToString();
+
+                if (!string.IsNullOrEmpty(authHeader) && authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                {
+                    context.Token = authHeader.Substring("Bearer ".Length).Trim();
+                }
+                else if (context.Request.Cookies.TryGetValue("X-Access-Token", out var cookieToken))
+                {
+                    context.Token = cookieToken;
+                }
+                Console.Write(context.Token);
+
+                return Task.CompletedTask;
+            }
+        };
     });
 
 builder.Services.AddIdentityCore<User>(ops =>
@@ -68,10 +90,14 @@ builder.Services.AddIdentityCore<User>(ops =>
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();
-app.UseCors("AllowAll");
+
+app.UseCors("AppCorsPolicy");
+
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.UseMiddleware<UserProviderMiddleware>();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

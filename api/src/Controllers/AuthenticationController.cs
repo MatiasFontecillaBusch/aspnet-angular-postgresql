@@ -14,6 +14,14 @@ namespace api.src.Controllers
         public async Task<ActionResult<LoginResponse>> Login(LoginDto loginDto)
         {
             var result = await _authenticationService.Login(loginDto);
+            Response.Cookies.Append("X-Access-Token", result.Token, new CookieOptions
+            {
+                HttpOnly = true, 
+                Secure = false,
+                SameSite = SameSiteMode.Lax,
+                Expires = DateTime.UtcNow.AddDays(1)
+            });
+
             return Ok(result);
         }
     }
