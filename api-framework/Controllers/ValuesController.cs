@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Npgsql;
+using System.Configuration;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -7,11 +10,30 @@ using System.Web.Http;
 
 namespace api_framework.Controllers
 {
+
     public class ValuesController : ApiController
     {
+        
         // GET api/values
         public IEnumerable<string> Get()
         {
+            string connString = ConfigurationManager.ConnectionStrings["PostgresConn"].ConnectionString;
+            using (var conn = new NpgsqlConnection(connString))
+            {
+                conn.Open();
+                string sql = "SELECT id, name FROM public.users;";
+
+                using (var cmd = new NpgsqlCommand(sql, conn))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            Console.WriteLine($"ID: {reader["id"]}, Name: {reader["name"]}");
+                        }
+                    }
+                }
+            }
             return new string[] { "value1", "value2" };
         }
 
