@@ -27,7 +27,7 @@
       </div>
       @if (dataForm.get('price')?.invalid && dataForm.get('price')?.touched) {
       <p class="text-xs text-rose-500 mt-1 ml-1 font-medium italic">
-        Ingresa un stock válido positivo.
+        Ingresa un precio mayor a 0.
       </p>
       }
     </div>
@@ -35,7 +35,12 @@
     <div>
       <label for="stock" class="block text-sm font-bold text-slate-700 mb-1 ml-1">Stock</label>
       <div class="relative">
-        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">|</span>
+        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+          </svg>
+        </span>
         <input id="stock" type="number" formControlName="stock" placeholder="0.00"
           class="w-full pl-8 pr-4 py-2.5 rounded-xl border border-slate-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-slate-700 font-semibold"
           [class.border-rose-500]="dataForm.get('stock')?.invalid && dataForm.get('stock')?.touched" />
@@ -45,6 +50,9 @@
         Ingresa un stock válido positivo.
       </p>
       }
+    </div>
+    <div>
+      <app-image-with-preview (fileChange)="onImageChanged($event)" />
     </div>
 
     @if (validationErrors().length > 0) {

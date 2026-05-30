@@ -238,7 +238,7 @@
     <div class="transition-all duration-300 ease-in-out"
       [class]="isSideBarOpen()
             ? 'fixed inset-x-0 bottom-0 z-50 w-full h-[60vh] opacity-100 md:sticky md:top-4 md:h-full md:w-80 md:z-10'
-            : 'fixed inset-x-0 bottom-[-100%] z-50 w-full h-[60vh] opacity-0 pointer-events-none md:sticky md:top-4 md:h-full md:w-0 md:opacity-0 md:overflow-hidden'">
+            : 'fixed inset-x-0 -bottom-full z-50 w-full h-[60vh] opacity-0 pointer-events-none md:sticky md:top-4 md:h-full md:w-0 md:opacity-0 md:overflow-hidden'">
 
       @if (isSideBarOpen()) {
       <div (click)="closeDetailsSideBar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm md:hidden -z-10"></div>

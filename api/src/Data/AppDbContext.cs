@@ -29,13 +29,43 @@ public class AppDbContext : IdentityDbContext<User>
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Name).IsRequired().HasMaxLength(200);
             entity.Property(e => e.Price).HasColumnType("numeric(18,2)");
-            entity.Property(e => e.Stock).HasColumnType("numeric(18,2)");
+
+            entity.Property(e => e.Stock).IsRequired();
+
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("NOW()");
 
             entity.HasOne(p => p.CreatedBy)
                   .WithMany()
                   .HasForeignKey(p => p.CreatedById)
                   .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(p => p.ImageData)
+                  .WithMany()
+                  .HasForeignKey(p => p.ImageId)
+                  .OnDelete(DeleteBehavior.SetNull);
+        });
+
+
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.Property(u => u.DisplayName)
+                  .IsRequired()
+                  .HasMaxLength(100);
+
+            entity.Property(u => u.ImageUrl)
+                  .IsRequired(false);
+
+            entity.Property(u => u.RefreshToken)
+                  .IsRequired(false)
+                  .HasMaxLength(500);
+
+            entity.Property(u => u.RefreshTokenExpiry)
+                  .IsRequired(false);
+
+            entity.HasOne(u => u.ImageData)
+                  .WithMany()
+                  .HasForeignKey(u => u.ImageId)
+                  .OnDelete(DeleteBehavior.SetNull);
         });
     }
 }
