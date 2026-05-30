@@ -12,8 +12,8 @@ using api.src.Data;
 namespace api.src.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260516234050_AddUserEntity")]
-    partial class AddUserEntity
+    [Migration("20260530174737_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,7 +59,7 @@ namespace api.src.Data.Migrations
                         new
                         {
                             Id = "admin-id",
-                            ConcurrencyStamp = "40a20c10-42c6-4d1e-be8a-284d20ffe757",
+                            ConcurrencyStamp = "b7a699cb-80df-432f-b340-d2052a608de5",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         });
@@ -198,6 +198,34 @@ namespace api.src.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("api.src.Entities.Image", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ImageId")
+                        .HasColumnType("integer")
+                        .HasColumnName("image_id");
+
+                    b.Property<string>("PublicId")
+                        .HasColumnType("text")
+                        .HasColumnName("public_id");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("url");
+
+                    b.HasKey("Id")
+                        .HasName("pk_images");
+
+                    b.ToTable("images", (string)null);
+                });
+
             modelBuilder.Entity("api.src.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -218,6 +246,14 @@ namespace api.src.Data.Migrations
                         .HasColumnType("text")
                         .HasColumnName("created_by_id");
 
+                    b.Property<int?>("ImageId")
+                        .HasColumnType("integer")
+                        .HasColumnName("image_id");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("text")
+                        .HasColumnName("image_url");
+
                     b.Property<bool>("IsAvailable")
                         .HasColumnType("boolean")
                         .HasColumnName("is_available");
@@ -232,8 +268,8 @@ namespace api.src.Data.Migrations
                         .HasColumnType("numeric(18,2)")
                         .HasColumnName("price");
 
-                    b.Property<decimal>("Stock")
-                        .HasColumnType("numeric(18,2)")
+                    b.Property<int>("Stock")
+                        .HasColumnType("integer")
                         .HasColumnName("stock");
 
                     b.HasKey("Id")
@@ -241,6 +277,9 @@ namespace api.src.Data.Migrations
 
                     b.HasIndex("CreatedById")
                         .HasDatabaseName("ix_products_created_by_id");
+
+                    b.HasIndex("ImageId")
+                        .HasDatabaseName("ix_products_image_id");
 
                     b.ToTable("products", (string)null);
                 });
@@ -262,7 +301,8 @@ namespace api.src.Data.Migrations
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
-                        .HasColumnType("text")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("display_name");
 
                     b.Property<string>("Email")
@@ -273,6 +313,10 @@ namespace api.src.Data.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean")
                         .HasColumnName("email_confirmed");
+
+                    b.Property<int?>("ImageId")
+                        .HasColumnType("integer")
+                        .HasColumnName("image_id");
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("text")
@@ -309,7 +353,8 @@ namespace api.src.Data.Migrations
                         .HasColumnName("phone_number_confirmed");
 
                     b.Property<string>("RefreshToken")
-                        .HasColumnType("text")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
                         .HasColumnName("refresh_token");
 
                     b.Property<DateTime?>("RefreshTokenExpiry")
@@ -331,6 +376,9 @@ namespace api.src.Data.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_asp_net_users");
+
+                    b.HasIndex("ImageId")
+                        .HasDatabaseName("ix_asp_net_users_image_id");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -408,7 +456,26 @@ namespace api.src.Data.Migrations
                         .IsRequired()
                         .HasConstraintName("fk_products_users_created_by_id");
 
+                    b.HasOne("api.src.Entities.Image", "ImageData")
+                        .WithMany()
+                        .HasForeignKey("ImageId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_products_images_image_id");
+
                     b.Navigation("CreatedBy");
+
+                    b.Navigation("ImageData");
+                });
+
+            modelBuilder.Entity("api.src.Entities.User", b =>
+                {
+                    b.HasOne("api.src.Entities.Image", "ImageData")
+                        .WithMany()
+                        .HasForeignKey("ImageId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("fk_asp_net_users_images_image_id");
+
+                    b.Navigation("ImageData");
                 });
 #pragma warning restore 612, 618
         }

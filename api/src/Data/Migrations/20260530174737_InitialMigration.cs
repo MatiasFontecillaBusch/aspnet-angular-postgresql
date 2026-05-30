@@ -7,26 +7,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace api.src.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class AddUserEntity : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<decimal>(
-                name: "stock",
-                table: "products",
-                type: "numeric(18,2)",
-                nullable: false,
-                oldClrType: typeof(int),
-                oldType: "integer");
-
-            migrationBuilder.AddColumn<string>(
-                name: "created_by_id",
-                table: "products",
-                type: "text",
-                nullable: false,
-                defaultValue: "");
-
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -42,32 +27,18 @@ namespace api.src.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AspNetUsers",
+                name: "images",
                 columns: table => new
                 {
-                    id = table.Column<string>(type: "text", nullable: false),
-                    display_name = table.Column<string>(type: "text", nullable: false),
-                    image_url = table.Column<string>(type: "text", nullable: true),
-                    refresh_token = table.Column<string>(type: "text", nullable: true),
-                    refresh_token_expiry = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    user_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    normalized_user_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    normalized_email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    email_confirmed = table.Column<bool>(type: "boolean", nullable: false),
-                    password_hash = table.Column<string>(type: "text", nullable: true),
-                    security_stamp = table.Column<string>(type: "text", nullable: true),
-                    concurrency_stamp = table.Column<string>(type: "text", nullable: true),
-                    phone_number = table.Column<string>(type: "text", nullable: true),
-                    phone_number_confirmed = table.Column<bool>(type: "boolean", nullable: false),
-                    two_factor_enabled = table.Column<bool>(type: "boolean", nullable: false),
-                    lockout_end = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    lockout_enabled = table.Column<bool>(type: "boolean", nullable: false),
-                    access_failed_count = table.Column<int>(type: "integer", nullable: false)
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    url = table.Column<string>(type: "text", nullable: false),
+                    public_id = table.Column<string>(type: "text", nullable: true),
+                    image_id = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("pk_asp_net_users", x => x.id);
+                    table.PrimaryKey("pk_images", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -89,6 +60,42 @@ namespace api.src.Data.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    id = table.Column<string>(type: "text", nullable: false),
+                    display_name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    image_url = table.Column<string>(type: "text", nullable: true),
+                    refresh_token = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    refresh_token_expiry = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    image_id = table.Column<int>(type: "integer", nullable: true),
+                    user_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    normalized_user_name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    normalized_email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    email_confirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    password_hash = table.Column<string>(type: "text", nullable: true),
+                    security_stamp = table.Column<string>(type: "text", nullable: true),
+                    concurrency_stamp = table.Column<string>(type: "text", nullable: true),
+                    phone_number = table.Column<string>(type: "text", nullable: true),
+                    phone_number_confirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    two_factor_enabled = table.Column<bool>(type: "boolean", nullable: false),
+                    lockout_end = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    lockout_enabled = table.Column<bool>(type: "boolean", nullable: false),
+                    access_failed_count = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_asp_net_users", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_asp_net_users_images_image_id",
+                        column: x => x.image_id,
+                        principalTable: "images",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -176,15 +183,42 @@ namespace api.src.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "products",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    name = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    price = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "NOW()"),
+                    is_available = table.Column<bool>(type: "boolean", nullable: false),
+                    stock = table.Column<int>(type: "integer", nullable: false),
+                    image_url = table.Column<string>(type: "text", nullable: true),
+                    created_by_id = table.Column<string>(type: "text", nullable: false),
+                    image_id = table.Column<int>(type: "integer", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_products", x => x.id);
+                    table.ForeignKey(
+                        name: "fk_products_images_image_id",
+                        column: x => x.image_id,
+                        principalTable: "images",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "fk_products_users_created_by_id",
+                        column: x => x.created_by_id,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "id", "concurrency_stamp", "name", "normalized_name" },
-                values: new object[] { "admin-id", "40a20c10-42c6-4d1e-be8a-284d20ffe757", "Administrator", "ADMINISTRATOR" });
-
-            migrationBuilder.CreateIndex(
-                name: "ix_products_created_by_id",
-                table: "products",
-                column: "created_by_id");
+                values: new object[] { "admin-id", "b7a699cb-80df-432f-b340-d2052a608de5", "Administrator", "ADMINISTRATOR" });
 
             migrationBuilder.CreateIndex(
                 name: "ix_asp_net_role_claims_role_id",
@@ -218,27 +252,30 @@ namespace api.src.Data.Migrations
                 column: "normalized_email");
 
             migrationBuilder.CreateIndex(
+                name: "ix_asp_net_users_image_id",
+                table: "AspNetUsers",
+                column: "image_id");
+
+            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "normalized_user_name",
                 unique: true);
 
-            migrationBuilder.AddForeignKey(
-                name: "fk_products_users_created_by_id",
+            migrationBuilder.CreateIndex(
+                name: "ix_products_created_by_id",
                 table: "products",
-                column: "created_by_id",
-                principalTable: "AspNetUsers",
-                principalColumn: "id",
-                onDelete: ReferentialAction.Restrict);
+                column: "created_by_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_products_image_id",
+                table: "products",
+                column: "image_id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "fk_products_users_created_by_id",
-                table: "products");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -255,26 +292,16 @@ namespace api.src.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "products");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
-            migrationBuilder.DropIndex(
-                name: "ix_products_created_by_id",
-                table: "products");
-
-            migrationBuilder.DropColumn(
-                name: "created_by_id",
-                table: "products");
-
-            migrationBuilder.AlterColumn<int>(
-                name: "stock",
-                table: "products",
-                type: "integer",
-                nullable: false,
-                oldClrType: typeof(decimal),
-                oldType: "numeric(18,2)");
+            migrationBuilder.DropTable(
+                name: "images");
         }
     }
 }
